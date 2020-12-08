@@ -2,36 +2,47 @@ const mongoose = require('mongoose')
 
 let Schema = mongoose.Schema
 
-let usarioSchema = new Schema({
+let usuarioSchema = new Schema({
+    matricula:{
+        type: Number,
+        required: [true, 'El nombre es necesario'],
+        unique: true
+    },
+    appaterno:{
+        type: String,
+        required: [true, 'El Apellido Paterno es necesario'],
+    },
+    apmaterno:{
+        type: String,
+        required: [true, 'La Apellido Materno es necesaria']
+    },
     nombre:{
         type: String,
-        required: [true, 'El nombre es necesario']
+        required: [true, 'El nombres es required']
     },
     email:{
         type: String,
-        required: [true, 'El correo es necesario'],
-        unique: true //es para hacer unico el dato
+        required: [true, 'El email es required']
     },
-    password:{
-        type: String,
-        required: [true, 'La contraseña es necesaria']
+    telefono:{
+        type: Number,
     },
-    img:{
+    carrera:{
         type: String,
-        required: false
+       required: [true, 'la carrera es necesaria']
     },
-    role:{
+    semestre:{
+        type:String,
+        required: [true, 'El semestre tambien es necesario']
+    },
+    grupo:{
         type: String,
-        default: 'USER_ROLE'
+        required: [true,'El grupo es necesario']
     },
     estado:{
         type: Boolean,
         default: true
-    },
-    google:{
-        type: Boolean,
-        default: false
     }
 })
 
-module.exports = mongoose.model('Usuario',usarioSchema)
+module.exports = mongoose.model('Usuario',usuarioSchema)

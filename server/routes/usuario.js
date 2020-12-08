@@ -34,9 +34,15 @@ app.get('/usuario', function(req, res){
 app.post('/usuario', function(req, res){
     let body = req.body;
     let usr = new Usuario({
+        matricula: body.matricula,
+        appaterno: body.appaterno,
+        apmaterno: body.apmaterno,
         nombre: body.nombre,
         email: body.email,
-        password: bcrypt.hashSync(body.password, 10)
+        telefono: body.telefono,
+        carrera: body.carrera,
+        semestre: body.semestre,
+        grupo: body.grupo
     });
 
     usr.save((err, usrDB)=>{
@@ -59,7 +65,7 @@ app.post('/usuario', function(req, res){
 //actualizar usuario
 app.put('/usuario/:id', function(req, res){
     let id = req.params.id
-    let body = _.pick(req.body, ['nombre','email'])
+    let body = _.pick(req.body, ['appaterno','apmaterno','nombre','email','telefono','carrera','semestre','grupo'])
 
     Usuario.findByIdAndUpdate(id,body,
          {new: true, runValidators: true, context: 'query'},

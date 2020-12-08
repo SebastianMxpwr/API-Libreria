@@ -1,15 +1,15 @@
 const express = require('express');
-const Categoria = require('../models/categoria');
+const Libros = require('../models/libro');
 const app = express();
 const _ = require('underscore');
 const { has } = require('underscore');
 
-app.get('/categoria', (req, res)=>{
+app.get('/libro', (req, res)=>{
 
     let desde = req.query.desde || 0;
     let hasta = req.query.hasta || 5;
 
-    Categoria.find({})
+    Libros.find({})
     .skip(Number(desde))
     .limit(Number(hasta))
     .populate('usuario', 'nombre email')
@@ -24,18 +24,22 @@ app.get('/categoria', (req, res)=>{
 
         res.json({ 
             ok: true,
-            msg: 'Aqui esta pinche prro',
+            msg: 'Los libros son: ',
             conteo: categorias.length,
             categorias
         })
     })
 })
 
-app.post('/categoria', (req, res)=>{
+app.post('/libro', (req, res)=>{
 
-    let cat = new Categoria({
-        descripcion: req.body.descripcion,
-        usuario: req.body.usuario
+    let cat = new Libros({
+        clave: req.body.clave,
+        nombre: req.body.nombre,
+        isbn: req.body.isbn,
+        editorial: req.body.editorial,
+        autor: req.body.autor,
+        anio: req.body.anio
 
     })
     cat.save((err, catDB)=>{
@@ -49,18 +53,18 @@ app.post('/categoria', (req, res)=>{
 
         res.json({
             ok: true,
-            msg: 'Categoria insertada con exito',
+            msg: 'Libro insertado con exito',
             catDB
         })
     })
     
 })
 
-app.put('/categoria/:id', (req, res)=>{
+app.put('/libro/:id', (req, res)=>{
     let id = req.params.id
-    let body = _.pick(req.body, ['descripcion', 'usuario'])
+    let body = _.pick(req.body, ['nombre', 'isbn','editorial','autor','autor','anio'])
 
-    Categoria.findByIdAndUpdate(id, body, 
+    Libros.findByIdAndUpdate(id, body, 
         {new:true, runValidators:true, context:'query'},(err,catDB)=>{
             if (err){
                 return res.status(400).json({
@@ -72,17 +76,17 @@ app.put('/categoria/:id', (req, res)=>{
 
         res.json({
             ok: true,
-            msg: 'Se actualizo puta',
+            msg: 'Se actualizo.. el Libro',
             catDB
         })
     })
 })
 
 
-app.delete('/categoria/:id', (req, res)=>{
+app.delete('/libro/:id', (req, res)=>{
     let id = req.params.id
 
-    Categoria.findOneAndRemove(id, {context:'query'}, (err, catDB)=>{
+    Libros.findOneAndRemove(id, {context:'query'}, (err, catDB)=>{
         if(err){
             return res.status(400).json({
                 ok:false,

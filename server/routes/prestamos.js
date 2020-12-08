@@ -1,18 +1,17 @@
 const express = require('express');
-const Productos = require('../models/productos')
+const Prestamos = require('../models/prestamo')
 const app = express()
 const _ = require('underscore')
 
 
-app.get('/productos', function(req, res){
+app.get('/prestamos', function(req, res){
 
     let desde = req.query.desde || 0
     let hasta = req.query.hasta || 5
 
-    Productos.find({Disponibilidad: true})
+    Prestamos.find({estadoprestamo: true})
     .skip(Number(desde))
     .limit(Number(hasta))
-    .populate('usuario', 'nombre email')
     .exec((err, productos)=>{
         if(err){
             return res.status(400).json({
@@ -24,7 +23,7 @@ app.get('/productos', function(req, res){
 
         res.json({
             ok: true,
-            msg: 'Lista de prouctos',
+            msg: 'Todos los prestamos',
             conteo: productos.length,
             productos
         })
@@ -32,13 +31,14 @@ app.get('/productos', function(req, res){
 })
 
 
-app.post('/productos', (req, res)=>{
+app.post('/prestamos', (req, res)=>{
 
-    let prod = new Productos({
-        Nombre: req.body.Nombre,
-        PrecioUni: req.body.PrecioUni,
-        Categoria: req.body.Categoria,
-        Usuario: req.body.Usuario
+    
+    let prod = new Prestamos({ 
+        matricula: req.body.matricula,
+        clave: req.body.clave,
+        fechasalida: req.body.fechasalida,
+        fechadevolucion: req.body.fechadevolucion
 
     })
     prod.save((err, proBD)=>{
@@ -52,18 +52,18 @@ app.post('/productos', (req, res)=>{
 
         res.json({
             ok: true,
-            msg: 'Producto insertado con exito',
+            msg: 'Prestamo exitoso',
             proBD
         })
     })
     
 })
 
-app.put('/productos/:id', (req, res)=>{
+app.put('/prestamos/:id', (req, res)=>{
     let id = req.params.id
-    let body = _.pick(req.body, ['Nombre', 'PrecioUni', 'Categoria', 'Usuario'])
+    let body = _.pick(req.body, ['matricula', 'clave', 'fechasalida', 'fechadevolucion'])
 
-    Productos.findByIdAndUpdate(id, body, 
+    Prestamos.findByIdAndUpdate(id, body, 
         {new:true, runValidators:true, context:'query'},(err,proBD)=>{
             if (err){
                 return res.status(400).json({
@@ -75,14 +75,14 @@ app.put('/productos/:id', (req, res)=>{
 
         res.json({
             ok: true,
-            msg: 'Se actualizo',
+            msg: 'Se actualizo el prestamo',
             proBD
         })
     })
 })
 
 
-app.delete('/productos/:id', (req, res)=>{
+app.delete('/prestamos/:id', (req, res)=>{
     let id = req.params.id
 
 //     Productos.findOneAndRemove(id, {context:'query'}, (err, proBD)=>{
@@ -100,7 +100,7 @@ app.delete('/productos/:id', (req, res)=>{
 //         })
 //     })
 
-Productos.findByIdAndUpdate(id,{Disponibilidad: false},
+Prestamos.findByIdAndUpdate(id,{estadoprestamo: false},
     { new: true , runValidators: true, context: 'query'}, (err ,proBD) =>{
         if(err){
             return res.status(400).json({
@@ -111,7 +111,7 @@ Productos.findByIdAndUpdate(id,{Disponibilidad: false},
         }
         res.json({
             ok: true,
-            msg: 'Usuario eliminao con exito',
+            msg: 'Prestamo terminado con exito',
             proBD
             })
     })

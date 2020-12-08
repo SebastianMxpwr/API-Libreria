@@ -3,21 +3,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose =  require('mongoose');
 const app = express();
+const cors = require('cors')
 
 app.use(bodyParser.urlencoded({ extended: false }))
  
 app.use(bodyParser.json())
-
+app.use(cors())
 app.get('/', function(req, res){
     res.send('<h1>Bienvenido a mi servidor rest (localhost)</h1>');
 })
 
 app.use(require('./routes/usuario'));
-app.use(require('./routes/categoria'));
+app.use(require('./routes/libros'));
 app.use(require('./routes/login'));
-app.use(require('./routes/productos'));
+app.use(require('./routes/prestamos'));
 
-mongoose.connect('mongodb://localhost:27017/cafeteria',{
+mongoose.connect('mongodb+srv://admin:1234567890@cluster0.i0pvv.mongodb.net/Libreria',{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
